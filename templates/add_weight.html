@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Add Weight - Thavakalthu Farm</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f2f18, #2e7d32);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+/* Elegant floating logo */
+.logo-corner {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    background: rgba(255,255,255,0.92);
+    padding: 14px 18px;
+    border-radius: 30px;
+    box-shadow:
+        0 20px 45px rgba(0,0,0,0.22),
+        0 10px 25px rgba(0,0,0,0.14);
+    backdrop-filter: blur(10px);
+    animation: floatLogo 6s ease-in-out infinite;
+}
+
+@keyframes floatLogo {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+.logo-corner img {
+    width: 140px;
+    border-radius: 22px;
+    display: block;
+}
+
+/* Main card */
+.card {
+    width: 420px;
+    background: white;
+    padding: 50px;
+    border-radius: 26px;
+    box-shadow:
+        0 30px 60px rgba(0,0,0,0.15),
+        0 12px 30px rgba(0,0,0,0.08);
+}
+
+.card h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #2e7d32;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Form styling */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid #dfe6ee;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #d4af37;
+    box-shadow: 0 0 0 4px rgba(212,175,55,0.15);
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 15px;
+    border-radius: 14px;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(135deg, #d4af37, #f5d76e);
+    transition: 0.3s;
+    box-shadow: 0 15px 25px rgba(212,175,55,0.25);
+    margin-top: 10px;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 35px rgba(212,175,55,0.35);
+}
+
+/* Back link */
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: 22px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #2e7d32;
+    font-weight: 700;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media(max-width: 600px) {
+    .card {
+        width: 100%;
+        padding: 35px;
+    }
+
+    .logo-corner img {
+        width: 110px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Logo -->
+<div class="logo-corner">
+    <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Thavakalthu Farm Logo">
+</div>
+
+<!-- Card -->
+<div class="card">
+    <h2>Add Monthly Weight</h2>
+
+    <form method="POST">
+        <div class="form-group">
+            <label>Date</label>
+            <input type="date" name="date" required>
+        </div>
+
+        <div class="form-group">
+            <label>Weight (kg)</label>
+            <input type="number" step="0.01" name="weight" required>
+        </div>
+
+        <button type="submit">Add Weight</button>
+    </form>
+
+    <a href="/goat/{{ goat_id }}" class="back-link">← Back to Goat Details</a>
+</div>
+
+</body>
+</html>

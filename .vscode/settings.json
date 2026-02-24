@@ -1,0 +1,6 @@
+{
+  "python.defaultInterpreterPath": "C:\\Users\\samis\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+  "terminal.integrated.env.windows": {
+    "PATH": "C:\\Users\\samis\\AppData\\Local\\Programs\\Python\\Python314;C:\\Users\\samis\\AppData\\Local\\Programs\\Python\\Python314\\Scripts;${env:PATH}"
+  }
+}

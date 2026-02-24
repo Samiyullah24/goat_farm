@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <!-- ✅ CHANGED: title now uses breed variable (not goat[1]) -->
+    <title>Goat Details - {{ breed }}</title>
+
+    <style>
+        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        h2 { color: #2e7d32; }
+        table { border-collapse: collapse; width: 80%; margin-bottom: 20px; background: white; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        th { background-color: #2e7d32; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+
+        .btn { padding: 8px 14px; border-radius: 8px; text-decoration: none; color: white; margin: 6px 4px; display: inline-block; font-weight: bold; }
+        .add-weight { background-color: #ffa000; }
+        .add-medical { background-color: #0288d1; }
+        .back-link { display: inline-block; margin-top: 10px; font-weight: bold; color: #2e7d32; text-decoration: none; }
+
+        /* ✅ CHANGED: New info box style for summary */
+        .info-box {
+            background: #ffffff;
+            border-left: 6px solid #2e7d32;
+            padding: 12px 14px;
+            border-radius: 8px;
+            width: 80%;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .small-muted { color: #666; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <!-- ✅ CHANGED: heading uses breed variable -->
+    <h2>Goat Details - {{ breed }}</h2>
+
+    <!-- ✅ CHANGED: Summary now shows LATEST weight and updated date -->
+    <div class="info-box">
+        <p style="margin:0;">
+            <strong>ID:</strong> {{ goat_id }} |
+            <strong>Breed:</strong> {{ breed }} |
+            <strong>Age:</strong> {{ years }}y {{ months }}m |
+            <strong>Latest Weight:</strong> {{ latest_weight }} kg
+            {% if latest_weight_date %}
+                <span class="small-muted"> (Updated: {{ latest_weight_date }})</span>
+            {% endif %}
+        </p>
+    </div>
+
+    <h3>Weight History</h3>
+
+    <!-- ✅ CHANGED: uses goat_id variable -->
+    <a href="/add_weight/{{ goat_id }}" class="btn add-weight">Add Weight</a>
+
+    <table>
+    <tr>
+        <th>Record Date</th>
+        <th>Weight (kg)</th>
+        <th>Actions</th>
+    </tr>
+
+    {% if weights|length == 0 %}
+    <tr>
+        <td colspan="3" class="small-muted">No weight records yet</td>
+    </tr>
+    {% else %}
+        {% for w in weights %}
+        <tr>
+            <td>{{ w.record_date }}</td>
+            <td>{{ w.weight }}</td>
+            <td>
+                <a class="btn add-medical" href="/edit_weight/{{ w.id }}/{{ goat_id }}">Edit</a>
+                <form method="POST" action="/delete_weight/{{ w.id }}/{{ goat_id }}" style="display:inline;">
+                    <button class="btn add-weight" type="submit" onclick="return confirm('Delete this weight record?');">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    {% endif %}
+</table>
+
+    <h3>Medical History</h3>
+
+    <!-- ✅ CHANGED: uses goat_id variable -->
+    <a href="/add_medical/{{ goat_id }}" class="btn add-medical">Add Record</a>
+
+   <table>
+    <tr>
+        <th>Date</th>
+        <th>Description</th>
+        <th>Actions</th>
+    </tr>
+
+    {% if medical_history|length == 0 %}
+    <tr>
+        <td colspan="3" class="small-muted">No medical records yet</td>
+    </tr>
+    {% else %}
+        {% for m in medical_history %}
+        <tr>
+            <td>{{ m.record_date }}</td>
+            <td>{{ m.description }}</td>
+            <td>
+                <a class="btn add-medical" href="/edit_medical/{{ m.id }}/{{ goat_id }}">Edit</a>
+                <form method="POST" action="/delete_medical/{{ m.id }}/{{ goat_id }}" style="display:inline;">
+                    <button class="btn add-weight" type="submit" onclick="return confirm('Delete this medical record?');">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    {% endif %}
+</table>
+
+    <!-- ✅ CHANGED: styled back link -->
+    <a href="/dashboard" class="back-link">← Back to Dashboard</a>
+
+</body>
+</html>

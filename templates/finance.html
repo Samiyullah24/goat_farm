@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Finance - Thavakalthu Farm</title>
+  <style>
+    :root{
+      --green:#2e7d32;
+      --green2:#43a047;
+      --bg:#f5f7fa;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --shadow: 0 14px 30px rgba(0,0,0,0.10);
+
+      --blue:#1e88e5;
+      --red:#ef4444;
+      --amber:#f59e0b;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      padding:22px;
+      font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+      background:
+        radial-gradient(circle at 20% -20%, rgba(67,160,71,0.18), transparent 38%),
+        radial-gradient(circle at 120% 0%, rgba(30,136,229,0.16), transparent 42%),
+        var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+
+    .container{ max-width: 1200px; margin: 0 auto; }
+
+    /* topbar */
+    .topbar{
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 14px;
+      z-index: 10;
+      animation: drop 520ms ease both;
+    }
+    @keyframes drop{ from{transform:translateY(-12px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+    .brand{ display:flex; align-items:center; gap:12px; }
+    .brand img{
+      width: 54px; height: 54px; border-radius: 16px; object-fit: cover;
+      border: 1px solid var(--border); background:#fff;
+    }
+    .brand .name{ font-weight: 1000; color: var(--green); font-size: 18px; line-height:1.1; }
+    .brand .sub{ font-size: 13px; font-weight: 800; color: var(--muted); margin-top: 2px; }
+
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding: 10px 14px;
+      border-radius: 12px;
+      text-decoration:none;
+      font-weight: 1000;
+      font-size: 14px;
+      border: 1px solid var(--border);
+      background:#fff;
+      color: var(--text);
+      cursor:pointer;
+      transition: transform .18s ease;
+      white-space: nowrap;
+    }
+    .btn:hover{ transform: translateY(-1px); }
+
+    /* hero */
+    .hero{
+      margin-top: 16px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      position: relative;
+      overflow:hidden;
+      animation: fadeUp 620ms ease both;
+    }
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:-120px -140px auto auto;
+      width: 340px; height: 340px;
+      background: radial-gradient(circle at 30% 30%, rgba(67,160,71,0.20), transparent 60%);
+      transform: rotate(18deg);
+      animation: floatBlob 6s ease-in-out infinite;
+    }
+    @keyframes floatBlob{ 0%,100%{transform:translateY(0) rotate(18deg)} 50%{transform:translateY(10px) rotate(18deg)} }
+
+    @keyframes fadeUp{ from{transform:translateY(14px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+    .hero-title{
+      margin:0;
+      font-size: 28px;
+      font-weight: 1000;
+      color: var(--green);
+      text-align:center;
+      position:relative;
+      z-index:1;
+    }
+    .hero-sub{
+      text-align:center;
+      margin: 8px 0 0 0;
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 13px;
+      position:relative;
+      z-index:1;
+    }
+
+    /* grid */
+    .grid{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .card{
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      position:relative;
+      overflow:hidden;
+      opacity:0;
+      transform: translateY(12px);
+      animation: cardIn 520ms ease forwards;
+    }
+    .card:nth-child(1){ animation-delay: 120ms; }
+    .card:nth-child(2){ animation-delay: 220ms; }
+    .card:nth-child(3){ animation-delay: 320ms; }
+    @keyframes cardIn{ to{opacity:1; transform: translateY(0);} }
+
+    .label{ font-size:13px; font-weight:900; color:var(--muted); }
+    .value{ font-size: 30px; font-weight: 1000; margin-top: 8px; }
+    .hint{ font-size:12px; font-weight:800; color:var(--muted); margin-top: 8px; }
+
+    .pos{ color: var(--green); }
+    .neg{ color: var(--red); }
+
+    /* donut */
+    .donut-wrap{
+      margin-top: 14px;
+      display:flex;
+      gap: 14px;
+      align-items:center;
+      border-top: 1px dashed #e6e8ec;
+      padding-top: 14px;
+    }
+    .donut{
+      width:120px; height:120px; transform: rotate(-90deg);
+    }
+    .donut text{
+      transform: rotate(90deg);
+      transform-origin: 50% 50%;
+      font-size: 10px;
+      font-weight: 1000;
+      fill: #111827;
+    }
+    .legend{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width: 200px;
+    }
+    .leg{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      font-weight: 900;
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px dashed #dfe6ee;
+      border-radius: 14px;
+      padding: 10px 12px;
+      background:#fbfdff;
+    }
+
+    /* table */
+    .table-card{
+      margin-top: 12px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      animation: fadeUp 620ms ease both;
+    }
+    .table-head{
+      padding: 14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      background: #f7fbf7;
+      font-weight:1000;
+      color: var(--green);
+    }
+    table{
+      width:100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+    th,td{
+      padding: 12px 12px;
+      text-align:center;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    th{
+      background: var(--green);
+      color:#fff;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    tr:nth-child(even){ background:#fbfdff; }
+    tr:hover{ background:#eef8ef; }
+
+    .right{ text-align:right; }
+
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+      body{ padding: 14px; }
+      .topbar{ flex-direction:column; align-items:stretch; }
+      .actions{ justify-content:flex-start; }
+      table{ min-width: 720px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="topbar">
+    <div class="brand">
+      <img src="/static/logo.jpg" alt="Logo">
+      <div>
+        <div class="name">Thavakalthu Farm</div>
+        <div class="sub">Finance (Private)</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a href="/dashboard" class="btn">← Back</a>
+      <a href="/logout" class="btn">Logout</a>
+    </div>
+  </div>
+
+  <div class="hero">
+    <h1 class="hero-title">Finance Overview</h1>
+    <div class="hero-sub">Revenue • Purchase Cost • Profit (calculated automatically)</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Revenue</div>
+      <div class="value">{{ "%.2f"|format(revenue) }}</div>
+      <div class="hint">Total sold amount</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Purchase Cost (Sold Goats)</div>
+      <div class="value">{{ "%.2f"|format(cost_sold) }}</div>
+      <div class="hint">Total purchase price of sold goats</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Profit</div>
+      {% if profit >= 0 %}
+        <div class="value pos">{{ "%.2f"|format(profit) }}</div>
+        <div class="hint">Revenue − Purchase Cost</div>
+      {% else %}
+        <div class="value neg">{{ "%.2f"|format(profit) }}</div>
+        <div class="hint">Loss (Revenue − Purchase Cost)</div>
+      {% endif %}
+
+      <div class="donut-wrap">
+        <svg class="donut" viewBox="0 0 36 36">
+          <path d="M18 2.0845
+                   a 15.9155 15.9155 0 0 1 0 31.831
+                   a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none" stroke="#eef2f7" stroke-width="3"></path>
+
+          <path id="revArc"
+                d="M18 2.0845
+                   a 15.9155 15.9155 0 0 1 0 31.831
+                   a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none" stroke="var(--green2)" stroke-width="3"
+                stroke-dasharray="0, 100" stroke-linecap="round"></path>
+
+          <path id="costArc"
+                d="M18 2.0845
+                   a 15.9155 15.9155 0 0 1 0 31.831
+                   a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none" stroke="var(--amber)" stroke-width="3"
+                stroke-dasharray="0, 100" stroke-linecap="round"
+                style="opacity:0.75;"></path>
+
+          <text x="18" y="20" text-anchor="middle" id="donutPct">0%</text>
+        </svg>
+
+        <div class="legend">
+          <div class="leg"><div>Revenue Share</div><div id="revPct">0%</div></div>
+          <div class="leg"><div>Cost Share</div><div id="costPct">0%</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-head">Batch-wise Profit</div>
+    <div style="width:100%; overflow-x:auto;">
+      <table>
+        <tr>
+          <th>Batch</th>
+          <th>Sold Goats</th>
+          <th>Revenue</th>
+          <th>Cost</th>
+          <th>Profit</th>
+        </tr>
+
+        {% if batch_rows and batch_rows|length > 0 %}
+          {% for r in batch_rows %}
+            <tr>
+              <td>{{ r.batch_name if r.batch_name else "No Batch" }}</td>
+              <td>{{ r.sold_count }}</td>
+              <td class="right">{{ "%.2f"|format(r.revenue) }}</td>
+              <td class="right">{{ "%.2f"|format(r.cost) }}</td>
+              {% if r.profit >= 0 %}
+                <td class="right pos">{{ "%.2f"|format(r.profit) }}</td>
+              {% else %}
+                <td class="right neg">{{ "%.2f"|format(r.profit) }}</td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="5" style="color:var(--muted);font-weight:900;padding:18px;">
+              No sales yet. Sell goats to see finance analytics.
+            </td>
+          </tr>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function(){
+    const revenue = parseFloat("{{ revenue }}") || 0;
+    const cost = parseFloat("{{ cost_sold }}") || 0;
+    const total = revenue + cost;
+
+    const revPct = total > 0 ? (revenue/total)*100 : 0;
+    const costPct = Math.max(0, 100 - revPct);
+
+    document.getElementById("donutPct").textContent = revPct.toFixed(0) + "%";
+    document.getElementById("revPct").textContent = revPct.toFixed(0) + "%";
+    document.getElementById("costPct").textContent = costPct.toFixed(0) + "%";
+
+    setTimeout(()=>{
+      document.getElementById("revArc").setAttribute("stroke-dasharray", revPct.toFixed(1) + ", 100");
+      document.getElementById("costArc").setAttribute("stroke-dasharray", costPct.toFixed(1) + ", 100");
+      document.getElementById("costArc").style.strokeDashoffset = (-revPct).toFixed(1);
+    }, 350);
+  })();
+</script>
+
+</body>
+</html>

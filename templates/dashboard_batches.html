@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thavakalthu Farm - Dashboard</title>
+  <style>
+    :root{
+      --green:#2e7d32;
+      --green2:#43a047;
+      --bg:#f5f7fa;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --shadow: 0 14px 30px rgba(0,0,0,0.10);
+
+      --purple:#6d28d9;
+      --purple2:#5b21b6;
+
+      --warn:#ffb300;
+      --warn2:#ffa000;
+
+      --blue:#1e88e5; /* ✅ FIX: You used --blue in donut but it wasn't defined */
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      padding:22px;
+      font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+      background:
+        radial-gradient(circle at 12% -10%, rgba(67,160,71,0.18), transparent 42%),
+        radial-gradient(circle at 110% 0%, rgba(30,136,229,0.16), transparent 46%),
+        var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+
+    .container{ max-width: 1250px; margin: 0 auto; }
+
+    .topbar{
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 14px;
+      z-index: 10;
+      animation: drop 520ms ease both;
+    }
+    @keyframes drop{ from{transform:translateY(-12px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+    .brand{ display:flex; align-items:center; gap:12px; }
+    .brand img{
+      width:58px; height:58px; border-radius:16px; object-fit:cover;
+      border:1px solid var(--border); background:#fff;
+    }
+    .brand .name{ font-size:20px; font-weight:1000; color:var(--green); line-height:1.1; }
+    .brand .sub{ font-size:13px; font-weight:800; color:var(--muted); margin-top:2px; }
+
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 1000;
+      font-size: 14px;
+      border: 1px solid var(--border);
+      background:#fff;
+      color: var(--text);
+      cursor:pointer;
+      text-decoration:none;
+      transition: transform .18s ease;
+      white-space: nowrap;
+    }
+    .btn:hover{ transform: translateY(-1px); }
+
+    .btn-purple{ background: var(--purple); border:none; color:#fff; box-shadow:0 10px 18px rgba(0,0,0,0.08); }
+    .btn-purple:hover{ background: var(--purple2); }
+
+    .btn-warn{ background: var(--warn); border:none; color:#111827; box-shadow:0 10px 18px rgba(0,0,0,0.08); }
+    .btn-warn:hover{ background: var(--warn2); }
+
+    /* Inline finance drawer */
+    .drawer{
+      margin-top: 10px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      max-height: 0;
+      transition: max-height 260ms ease;
+    }
+    .drawer.open{ max-height: 180px; }
+
+    .drawer-inner{
+      padding: 14px 16px;
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .drawer h4{
+      margin:0;
+      font-size: 14px;
+      font-weight: 1000;
+    }
+    .drawer p{
+      margin:6px 0 0 0;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .pin-form{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      flex-wrap: wrap;
+    }
+    .pin-form input{
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-weight: 900;
+      outline:none;
+      min-width: 220px;
+    }
+
+    .error{
+      margin-top: 10px;
+      color:#b91c1c;
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    .hero{
+      margin-top: 16px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      position: relative;
+      overflow:hidden;
+      animation: fadeUp 620ms ease both;
+    }
+    @keyframes fadeUp{ from{transform:translateY(14px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:-120px -140px auto auto;
+      width: 340px; height: 340px;
+      background: radial-gradient(circle at 30% 30%, rgba(67,160,71,0.20), transparent 60%);
+      transform: rotate(18deg);
+      animation: floatBlob 6s ease-in-out infinite;
+    }
+    @keyframes floatBlob{ 0%,100%{transform:translateY(0) rotate(18deg)} 50%{transform:translateY(10px) rotate(18deg)} }
+
+    .hero-title{
+      margin:0;
+      font-size: 30px;
+      font-weight: 1000;
+      color: var(--green);
+      text-align:center;
+      position:relative;
+      z-index:1;
+    }
+    .hero-sub{
+      text-align:center;
+      margin: 8px 0 0 0;
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 13px;
+      position:relative;
+      z-index:1;
+    }
+
+    .grid{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: 1.2fr 1.1fr 0.9fr;
+      gap: 12px;
+    }
+
+    .card{
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      position:relative;
+      overflow:hidden;
+      opacity:0;
+      transform: translateY(12px);
+      animation: cardIn 520ms ease forwards;
+    }
+    .card:nth-child(1){ animation-delay: 120ms; }
+    .card:nth-child(2){ animation-delay: 220ms; }
+    .card:nth-child(3){ animation-delay: 320ms; }
+    @keyframes cardIn{ to{opacity:1; transform: translateY(0);} }
+
+    .label{ font-size: 13px; font-weight: 900; color: var(--muted); }
+    .value{ font-size: 34px; font-weight: 1000; margin-top: 8px; }
+
+    .kpi-row{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .kpi{
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.95);
+      padding: 14px;
+      cursor:pointer;
+      transition: transform .18s ease, box-shadow .18s ease;
+      user-select:none;
+    }
+    .kpi:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.10);
+    }
+    .hint{ font-size: 12px; font-weight: 800; color: var(--muted); margin-top: 8px; }
+
+    /* Donut */
+    .donut-wrap{ display:flex; gap:14px; align-items:center; cursor:pointer; }
+    .donut{ width:120px; height:120px; transform: rotate(-90deg); }
+    .donut text{
+      transform: rotate(90deg);
+      transform-origin: 50% 50%;
+      font-size: 10px;
+      font-weight: 1000;
+      fill: #111827;
+    }
+
+    .legend{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width: 170px;
+    }
+    .leg{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      font-weight: 900;
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px dashed #dfe6ee;
+      border-radius: 14px;
+      padding: 10px 12px;
+      background:#fbfdff;
+    }
+
+    .qa{ display:flex; flex-direction:column; gap:10px; margin-top: 8px; }
+    .qa a{
+      text-align:center;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-weight: 1000;
+      text-decoration:none;
+      border: 1px solid var(--border);
+      background:#fff;
+      color: var(--text);
+      transition: transform .18s ease;
+    }
+    .qa a:hover{ transform: translateY(-1px); }
+    .qa .primary{ background: var(--green2); color:#fff; border:none; }
+    .qa .secondary{ background: var(--purple); color:#fff; border:none; }
+
+    .search{ display:flex; gap:10px; margin-top: 8px; }
+    .search input{
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      font-weight: 900;
+      flex:1;
+      outline:none;
+      background:#fff;
+    }
+    .search button{
+      padding: 12px 14px;
+      border-radius: 14px;
+      border:none;
+      font-weight: 1000;
+      background: var(--blue);
+      color:#fff;
+      cursor:pointer;
+      transition: transform .18s ease;
+    }
+    .search button:hover{ transform: translateY(-1px); }
+
+    /* Trend */
+    .trend{ margin-top: 12px; padding-top: 12px; border-top: 1px dashed #e6e8ec; }
+    .bars{ display:flex; align-items:flex-end; gap:10px; height:130px; padding:10px 4px 2px 4px; }
+    .bar{ width:46px; display:flex; flex-direction:column; align-items:center; gap:6px; }
+    .col{
+      width:100%;
+      height:6px;
+      border-radius:12px;
+      background: linear-gradient(180deg, var(--green2), var(--green));
+      transition: height 900ms cubic-bezier(.2,.9,.2,1);
+    }
+    .lbl{ font-size:11px; color:var(--muted); font-weight:900; width:64px; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .amt{ font-size:11px; color:#111827; font-weight:1000; }
+
+    @media (max-width: 1100px){
+      .grid{ grid-template-columns: 1fr; }
+      .kpi-row{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px){
+      body{ padding:14px; }
+      .topbar{ flex-direction:column; align-items:stretch; }
+      .actions{ justify-content:flex-start; }
+      .donut-wrap{ flex-direction:column; align-items:flex-start; }
+      .legend{ min-width: auto; width:100%; }
+      .pin-form input{ min-width: 160px; width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="topbar">
+    <div class="brand">
+      <img src="/static/logo.jpg" alt="Logo">
+      <div>
+        <div class="name">Thavakalthu Farm</div>
+        <div class="sub">Smart Goat Management</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a href="/add_batch" class="btn btn-purple">+ Add Batch</a>
+
+      {% if finance_unlocked %}
+        <a href="/finance" class="btn">Finance</a>
+      {% else %}
+        <button class="btn btn-warn" type="button" onclick="toggleDrawer()">Unlock Finance</button>
+      {% endif %}
+
+      <a href="/logout" class="btn">Logout</a>
+    </div>
+  </div>
+
+  {% if not finance_unlocked %}
+  <div class="drawer" id="drawer">
+    <div class="drawer-inner">
+      <div>
+        <h4>Unlock Finance (Private)</h4>
+        <p>Enter PIN to view Purchase, Revenue, Profit.</p>
+        {% if unlock_error %}
+          <div class="error">Wrong PIN. Try again.</div>
+        {% endif %}
+      </div>
+
+      <form class="pin-form" action="/unlock_finance" method="POST">
+        <input type="password" name="pin" placeholder="Enter PIN (example: 7788)" required>
+        <button type="submit" class="btn btn-warn">Unlock</button>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="hero">
+    <h1 class="hero-title">Thavakalthu Farm - Dashboard</h1>
+    <div class="hero-sub">Summary + analytics (finance is private)</div>
+  </div>
+
+  <div class="grid">
+
+    <!-- Overview -->
+    <div class="card">
+      <div class="label">Overview</div>
+      <div class="kpi-row">
+
+        <div class="kpi" onclick="go('/batch_summary')">
+          <div class="label">Total Batches</div>
+          <div class="value" data-count="{{ total_batches|default(0) }}">0</div>
+          <div class="hint">Click to open Batch Summary</div>
+        </div>
+
+        <div class="kpi" onclick="go('/batch_summary')">
+          <div class="label">Total Goats</div>
+          <div class="value" data-count="{{ total_goats|default(0) }}">0</div>
+          <div class="hint">Click to view batch-wise breakdown</div>
+        </div>
+
+        <div class="kpi" onclick="financeClick()">
+          <div class="label">Sold Goats</div>
+          <div class="value" data-count="{{ sold_goats|default(0) }}">0</div>
+          <div class="hint">
+            {% if finance_unlocked %}
+              Click to open Finance
+            {% else %}
+              Unlock finance to view details
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="kpi" onclick="go('/batch_summary')">
+          <div class="label">Goats In Hand</div>
+          <div class="value" data-count="{{ goats_in_hand|default(0) }}">0</div>
+          <div class="hint">Total goats − sold goats</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Donut -->
+    <div class="card">
+      <div class="label">Sold vs In Hand</div>
+
+      <div class="donut-wrap" onclick="financeClick()">
+        <svg class="donut" viewBox="0 0 36 36">
+          <path d="M18 2.0845
+                   a 15.9155 15.9155 0 0 1 0 31.831
+                   a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none" stroke="#eef2f7" stroke-width="3"></path>
+
+          <path id="soldArc"
+                d="M18 2.0845
+                   a 15.9155 15.9155 0 0 1 0 31.831
+                   a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none" stroke="var(--blue)" stroke-width="3"
+                stroke-dasharray="0, 100" stroke-linecap="round"></path>
+
+          <path id="handArc"
+                d="M18 2.0845
+                   a 15.9155 15.9155 0 0 1 0 31.831
+                   a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none" stroke="var(--green2)" stroke-width="3"
+                stroke-dasharray="0, 100" stroke-linecap="round"
+                style="opacity:0.6;"></path>
+
+          <text x="18" y="20" text-anchor="middle" id="donutPct">0%</text>
+        </svg>
+
+        <div class="legend">
+          <div class="leg"><div>Sold</div><div>{{ sold_goats|default(0) }}</div></div>
+          <div class="leg"><div>In hand</div><div>{{ goats_in_hand|default(0) }}</div></div>
+          <div class="hint">
+            {% if finance_unlocked %}
+              Click donut → opens Finance
+            {% else %}
+              Click donut → opens Unlock Finance
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      {% if finance_unlocked and finance %}
+        <div class="trend">
+          <div class="label">Quick Finance Preview</div>
+          <div class="hint">
+            Revenue: {{ "%.2f"|format(finance.revenue) }}
+            | Cost(sold): {{ "%.2f"|format(finance.cost_sold) }}
+            | Profit: {{ "%.2f"|format(finance.profit) }}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Actions + Trend -->
+    <div class="card">
+      <div class="label">Quick Actions</div>
+
+      <div class="qa">
+        <a class="primary" href="/add_goat">+ Add Goat</a>
+        <a class="secondary" href="/add_batch">+ Add Batch</a>
+        <a href="/batch_summary">Batch Summary</a>
+      </div>
+
+      <div class="label" style="margin-top:14px;">Search Goat</div>
+      <div class="hint">Enter Goat ID to open details</div>
+
+      <div class="search">
+        <input type="number" id="goatId" placeholder="Example: 17" min="1">
+        <button type="button" onclick="goSearch()">Search</button>
+      </div>
+
+      <div class="trend">
+        <div class="label">Monthly Added Goats (Trend)</div>
+
+        {% if trend_labels and trend_labels|length > 0 %}
+          {% set maxv = (trend_values|max) if (trend_values|max) else 1 %}
+          <div class="bars">
+            {% for i in range(trend_labels|length) %}
+              {% set v = trend_values[i] %}
+              {% set h = (v / maxv) * 110 %}
+              <div class="bar">
+                <div class="amt">{{ v }}</div>
+                <div class="col" data-h="{{ h }}"></div>
+                <div class="lbl">{{ trend_labels[i] }}</div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="hint">Trend will show after adding <b>created_at</b> column.</div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  function go(path){ window.location.href = path; }
+
+  function toggleDrawer(){
+    const d = document.getElementById("drawer");
+    if(!d) return;
+    d.classList.toggle("open");
+  }
+
+  function goSearch(){
+    const id = document.getElementById("goatId").value;
+    if(!id) return;
+    window.location.href = "/goat/" + id;
+  }
+
+  function financeClick(){
+    const unlocked = "{{ '1' if finance_unlocked else '0' }}";
+    if(unlocked === "1") go("/finance");
+    else {
+      toggleDrawer();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
+  // Count-up animation
+  (function(){
+    const els = document.querySelectorAll("[data-count]");
+    els.forEach(el=>{
+      const target = parseInt(el.dataset.count || "0", 10);
+      const start = performance.now();
+      const duration = 700;
+
+      function tick(now){
+        const p = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased);
+        if(p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  })();
+
+  // Donut animation
+  (function(){
+    const sold = parseFloat("{{ sold_goats|default(0) }}") || 0;
+    const hand = parseFloat("{{ goats_in_hand|default(0) }}") || 0;
+    const total = sold + hand;
+    const soldPct = total > 0 ? (sold/total)*100 : 0;
+    const handPct = Math.max(0, 100 - soldPct);
+
+    document.getElementById("donutPct").textContent = soldPct.toFixed(0) + "%";
+
+    setTimeout(()=>{
+      document.getElementById("soldArc").setAttribute("stroke-dasharray", soldPct.toFixed(1) + ", 100");
+      document.getElementById("handArc").setAttribute("stroke-dasharray", handPct.toFixed(1) + ", 100");
+      document.getElementById("handArc").style.strokeDashoffset = (-soldPct).toFixed(1);
+    }, 350);
+  })();
+
+  // Trend bars animation
+  (function(){
+    const cols = document.querySelectorAll(".col[data-h]");
+    setTimeout(()=>{
+      cols.forEach(c=>{
+        const h = parseFloat(c.dataset.h || "0");
+        c.style.height = Math.max(6, h) + "px";
+      });
+    }, 420);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Goat - Thavakalthu Farm</title>
+  <style>
+    :root{
+      --green:#2e7d32;
+      --green2:#43a047;
+      --bg:#f5f7fa;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --shadow: 0 14px 28px rgba(0,0,0,0.10);
+      --blue:#1e88e5;
+      --purple:#6d28d9;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      padding:22px;
+      font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+      background:
+        radial-gradient(circle at 10% -10%, rgba(67,160,71,0.18), transparent 42%),
+        radial-gradient(circle at 110% 0%, rgba(30,136,229,0.15), transparent 46%),
+        var(--bg);
+      color:var(--text);
+    }
+
+    .container{ max-width: 980px; margin: 0 auto; }
+
+    .card{
+      background: rgba(255,255,255,0.93);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 22px;
+      animation: fadeUp 520ms ease both;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-110px -140px auto auto;
+      width: 340px;
+      height: 340px;
+      background: radial-gradient(circle at 30% 30%, rgba(67,160,71,0.18), transparent 60%);
+      transform: rotate(18deg);
+    }
+
+    @keyframes fadeUp{
+      from{ transform: translateY(14px); opacity: 0; }
+      to{ transform: translateY(0); opacity: 1; }
+    }
+
+    h1{
+      margin:0 0 14px 0;
+      color: var(--green);
+      font-weight: 1000;
+      font-size: 30px;
+      position:relative;
+      z-index:1;
+    }
+
+    .sub{
+      margin-top:-6px;
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 13px;
+      position:relative;
+      z-index:1;
+    }
+
+    form{ margin-top: 18px; position:relative; z-index:1; }
+
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .row-1{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    label{
+      display:block;
+      margin-bottom: 8px;
+      font-weight: 900;
+      color: #111827;
+    }
+
+    input, select{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background:#fff;
+      font-weight: 900;
+      outline:none;
+      transition: box-shadow .18s ease, transform .18s ease;
+    }
+
+    input:focus, select:focus{
+      box-shadow: 0 0 0 4px rgba(67,160,71,0.15);
+    }
+
+    .hint{
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    .btns{
+      display:flex;
+      gap: 12px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+
+    .btn{
+      border:none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-weight: 1000;
+      cursor:pointer;
+      transition: transform .18s ease, filter .18s ease;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .btn:hover{ transform: translateY(-1px); }
+
+    .btn-primary{
+      background: linear-gradient(90deg, var(--green2), var(--green));
+      color:#fff;
+      box-shadow: 0 14px 26px rgba(67,160,71,0.18);
+      min-width: 160px;
+    }
+
+    .btn-ghost{
+      background:#fff;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .foot{
+      margin-top: 16px;
+      font-weight: 900;
+      color: var(--green);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      position:relative;
+      z-index:1;
+    }
+    .foot:hover{ text-decoration: underline; }
+
+    @media (max-width: 760px){
+      body{ padding: 14px; }
+      .row{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+  <div class="card">
+    <h1>Add Goat</h1>
+    <div class="sub">Enter goat details including purchase price (for profit & finance tracking)</div>
+
+    <form method="POST" action="/add_goat">
+
+      <!-- Batch -->
+      <div class="row-1">
+        <div>
+          <label>Batch</label>
+          <select name="batch_id" required>
+            {% for b in batches %}
+              <option value="{{ b.batch_id }}">{{ b.batch_name }}</option>
+            {% endfor %}
+          </select>
+          <div class="hint">Choose the batch where this goat belongs.</div>
+        </div>
+      </div>
+
+      <!-- Breed -->
+      <div class="row-1">
+        <div>
+          <label>Breed</label>
+          <input type="text" name="breed" placeholder="Example: Mayilambadi" required>
+          <div class="hint">Use consistent spelling for better search.</div>
+        </div>
+      </div>
+
+      <!-- Age -->
+      <div class="row">
+        <div>
+          <label>Age (Years)</label>
+          <input type="number" name="age_years" min="0" value="0" required>
+        </div>
+        <div>
+          <label>Age (Months)</label>
+          <input type="number" name="age_months" min="0" max="11" value="0" required>
+        </div>
+      </div>
+
+      <!-- Weight -->
+      <div class="row-1">
+        <div>
+          <label>Initial Weight (kg)</label>
+          <input type="number" step="0.1" min="0.1" name="weight" placeholder="Example: 25.0" required>
+          <div class="hint">This is the starting weight when adding the goat.</div>
+        </div>
+      </div>
+
+      <!-- Purchase Price -->
+      <div class="row-1">
+        <div>
+          <label>Purchase Price</label>
+          <input type="number" step="0.01" min="0" name="purchase_price" placeholder="Example: 450.00" required>
+          <div class="hint">Used for Finance Profit tracking (Revenue - Purchase Cost).</div>
+        </div>
+      </div>
+
+      <div class="btns">
+        <button type="submit" class="btn btn-primary">Save Goat</button>
+        <a class="btn btn-ghost" href="/dashboard">Cancel</a>
+      </div>
+
+      <a class="foot" href="/dashboard">← Back to Dashboard</a>
+
+    </form>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Photo</title>
+    <style>
+        body{font-family:Arial;background:#f5f7fa;padding:25px;}
+        .card{max-width:520px;margin:auto;background:white;padding:20px;border-radius:12px;
+              box-shadow:0 10px 20px rgba(0,0,0,0.08);}
+        h2{color:#2e7d32;margin-top:0}
+        .muted{color:#6b7280;font-size:14px}
+        input[type="file"]{width:100%;margin-top:10px}
+        button{
+            margin-top:16px;
+            background:#6d28d9;
+            color:white;
+            border:none;
+            padding:10px 16px;
+            border-radius:10px;
+            font-weight:bold;
+            cursor:pointer;
+        }
+        button:hover{background:#5b21b6}
+        a{display:inline-block;margin-top:16px;color:#2e7d32;text-decoration:none;font-weight:bold}
+        img{width:90px;height:90px;border-radius:16px;object-fit:cover;border:1px solid #ddd;margin-top:10px}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Upload Photo - {{ goat.breed }}</h2>
+        <p class="muted">Allowed: JPG, PNG, JPEG, WEBP, GIF</p>
+
+        {% if goat.photo %}
+            <p class="muted">Current photo:</p>
+            <img src="/static/uploads/{{ goat.photo }}" alt="Current Photo">
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="photo" accept="image/*" required>
+            <button type="submit">Upload</button>
+        </form>
+
+        <a href="/dashboard">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ batch.batch_name }} - Details</title>
+  <style>
+    :root{
+      --green:#2e7d32;
+      --green2:#43a047;
+      --bg:#f5f7fa;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --shadow: 0 14px 30px rgba(0,0,0,0.10);
+
+      --blue:#1e88e5;
+      --red:#e53935;
+      --amber:#ffb300;
+      --amber2:#ffa000;
+      --purple:#6d28d9;
+      --purple2:#5b21b6;
+
+      --soldBg:#fff7ed;
+      --soldBorder:#fed7aa;
+      --soldText:#9a3412;
+
+      --stockBg:#ecfdf5;
+      --stockBorder:#bbf7d0;
+      --stockText:#065f46;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      padding:22px;
+      font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+      background:
+        radial-gradient(circle at 12% -10%, rgba(67,160,71,0.18), transparent 42%),
+        radial-gradient(circle at 110% 0%, rgba(30,136,229,0.16), transparent 46%),
+        var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+
+    .container{ max-width:1280px; margin:0 auto; }
+
+    /* ---------- HEADER ---------- */
+    .head{
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      position: sticky;
+      top: 14px;
+      z-index: 10;
+      animation: drop 520ms ease both;
+    }
+    @keyframes drop{ from{transform:translateY(-12px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+    .title{
+      margin:0;
+      color:var(--green);
+      font-weight:1000;
+      font-size:22px;
+      line-height:1.15;
+    }
+    .meta{
+      margin-top:6px;
+      color:var(--muted);
+      font-weight:800;
+      font-size:13px;
+    }
+
+    .right{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+
+    .btn{
+      text-decoration:none;
+      padding:10px 14px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-weight:900;
+      color:var(--text);
+      cursor:pointer;
+      transition:.18s;
+      white-space:nowrap;
+    }
+    .btn:hover{ transform: translateY(-1px); }
+
+    .btn-green{
+      background: var(--green2);
+      color:#fff;
+      border:none;
+      box-shadow: 0 10px 18px rgba(0,0,0,0.08);
+    }
+    .btn-green:hover{ background: var(--green); }
+
+    .pill{
+      padding:8px 12px;
+      border-radius:999px;
+      background:#e8f5e9;
+      border:1px solid #d9eadb;
+      color:#14532d;
+      font-weight:1000;
+      white-space:nowrap;
+    }
+
+    /* ---------- KPI STRIP ---------- */
+    .kpis{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      animation: fadeUp 620ms ease both;
+    }
+    @keyframes fadeUp{ from{transform:translateY(14px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+    .kpi{
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+      position:relative;
+      overflow:hidden;
+      cursor:pointer;
+      transition:.18s;
+    }
+    .kpi:hover{ transform: translateY(-2px); }
+    .kpi .label{ color:var(--muted); font-weight:900; font-size:13px; }
+    .kpi .value{ margin-top:8px; font-size:28px; font-weight:1000; }
+    .kpi .hint{ margin-top:6px; font-size:12px; font-weight:800; color:var(--muted); }
+
+    .kpi::before{
+      content:"";
+      position:absolute;
+      inset:-90px -120px auto auto;
+      width: 240px; height: 240px;
+      background: radial-gradient(circle at 30% 30%, rgba(67,160,71,0.16), transparent 60%);
+      transform: rotate(18deg);
+    }
+
+    /* ---------- TABLE CARD ---------- */
+    .card{
+      margin-top:14px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      animation: fadeUp 740ms ease both;
+    }
+
+    .wrap{ overflow-x:auto; }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width: 1180px;
+    }
+
+    th, td{
+      padding:12px;
+      border-bottom:1px solid var(--border);
+      text-align:center;
+      white-space:nowrap;
+      font-size:14px;
+      font-weight:800;
+    }
+    th{
+      background: var(--green);
+      color:#fff;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    tr:nth-child(even){ background:#fbfdff; }
+    tr:hover{ background:#eef8ef; }
+
+    .goat-link{ text-decoration:none; color:#14532d; font-weight:1000; }
+    .goat-link:hover{ text-decoration:underline; }
+
+    .photo-img{
+      width:42px; height:42px;
+      border-radius:12px;
+      object-fit:cover;
+      border:1px solid #dce3ea;
+      box-shadow:0 6px 12px rgba(0,0,0,0.08);
+    }
+
+    .muted{ color:var(--muted); font-weight:800; }
+
+    /* ---------- STATUS BADGE ---------- */
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      font-weight:1000;
+      font-size:12px;
+      border:1px solid;
+      white-space:nowrap;
+    }
+    .badge.stock{
+      background: var(--stockBg);
+      border-color: var(--stockBorder);
+      color: var(--stockText);
+    }
+    .badge.sold{
+      background: var(--soldBg);
+      border-color: var(--soldBorder);
+      color: var(--soldText);
+    }
+    .dot{
+      width:9px; height:9px; border-radius:999px;
+      background: currentColor;
+      opacity: .9;
+    }
+
+    /* ---------- ACTIONS ---------- */
+    .actions-cell{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+    .action{
+      padding:9px 12px;
+      border-radius:12px;
+      text-decoration:none;
+      font-weight:1000;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:none;
+      cursor:pointer;
+      color:#fff;
+      transition:.18s;
+    }
+    .action:hover{ transform: translateY(-1px); }
+
+    .edit{ background:var(--blue); }
+    .del{ background:var(--red); }
+    .wgt{ background:var(--amber); color:#111827; }
+    .wgt:hover{ background:var(--amber2); }
+
+    .pho{ background:var(--purple); }
+    .pho:hover{ background:var(--purple2); }
+
+    .sell{ background: linear-gradient(90deg, var(--amber), var(--amber2)); color:#111827; }
+
+    .lock{
+      opacity:.55;
+      pointer-events:none;
+      filter: grayscale(0.2);
+    }
+
+    .row-sold{
+      background: #fffaf3 !important;
+    }
+
+    .note{
+      margin-top: 10px;
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 12px;
+      text-align:center;
+      animation: fadeUp 860ms ease both;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 1100px){
+      .kpis{ grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 720px){
+      body{ padding:14px; }
+      .head{ flex-direction:column; align-items:stretch; }
+      .right{ justify-content:flex-start; }
+      .kpis{ grid-template-columns: 1fr; }
+      table{ min-width: 1040px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="head">
+    <div>
+      <h1 class="title">{{ batch.batch_name }} - Goat Details</h1>
+      <div class="meta">
+        {% if batch.start_date %}Start: {{ batch.start_date }}{% endif %}
+        {% if batch.notes %} | Notes: {{ batch.notes }}{% endif %}
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="pill">Goats: {{ count }}</div>
+      <a class="btn" href="{{ url_for('dashboard') }}">← Back</a>
+      <a class="btn btn-green" href="{{ url_for('add_goat') }}">+ Add Goat</a>
+    </div>
+  </div>
+
+  {# --- KPIs for this batch --- #}
+  {% set sold_cnt = goats|selectattr('is_sold')|list|length if goats else 0 %}
+  {% set inhand_cnt = (count - sold_cnt) if count else 0 %}
+
+  <div class="kpis">
+    <div class="kpi" onclick="window.location.href='{{ url_for('batch_summary') }}'">
+      <div class="label">This Batch</div>
+      <div class="value">{{ batch.batch_name }}</div>
+      <div class="hint">Click to open Batch Summary</div>
+    </div>
+
+    <div class="kpi">
+      <div class="label">Total Goats</div>
+      <div class="value" data-count="{{ count }}">0</div>
+      <div class="hint">All goats inside this batch</div>
+    </div>
+
+    <div class="kpi">
+      <div class="label">In Stock</div>
+      <div class="value" data-count="{{ inhand_cnt }}">0</div>
+      <div class="hint">Not sold yet</div>
+    </div>
+
+    <div class="kpi" onclick="window.location.href='{{ url_for('finance') }}'">
+      <div class="label">Sold</div>
+      <div class="value" data-count="{{ sold_cnt }}">0</div>
+      <div class="hint">Click to open Finance</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="wrap">
+      <table>
+        <tr>
+          <th>S.No</th>
+          <th>ID</th>
+          <th>Breed</th>
+          <th>Status</th>
+          <th>Age</th>
+          <th>Latest Weight (kg)</th>
+          <th>Purchase</th>
+          <th>Barcode</th>
+          <th>Photo</th>
+          <th>Actions</th>
+        </tr>
+
+        {% if goats and goats|length > 0 %}
+          {% for g in goats %}
+            <tr class="{% if g.is_sold %}row-sold{% endif %}">
+              <td>{{ loop.index }}</td>
+
+              <td>
+                <a class="goat-link" href="{{ url_for('goat_details', goat_id=g.id) }}">{{ g.id }}</a>
+              </td>
+
+              <td>
+                <a class="goat-link" href="{{ url_for('goat_details', goat_id=g.id) }}">{{ g.breed }}</a>
+              </td>
+
+              <td>
+                {% if g.is_sold %}
+                  <span class="badge sold"><span class="dot"></span>SOLD</span>
+                {% else %}
+                  <span class="badge stock"><span class="dot"></span>IN STOCK</span>
+                {% endif %}
+              </td>
+
+              <td>{{ g.age_years }}y {{ g.age_months }}m</td>
+              <td>{{ g.latest_weight }}</td>
+
+              <td>
+                {% if g.purchase_price is not none %}
+                  {{ "%.2f"|format(g.purchase_price) }}
+                {% else %}
+                  <span class="muted">0.00</span>
+                {% endif %}
+              </td>
+
+              <td>
+                {% if g.barcode %}{{ g.barcode }}{% else %}<span class="muted">-</span>{% endif %}
+              </td>
+
+              <td>
+                {% if g.photo %}
+                  <img class="photo-img" src="/static/uploads/{{ g.photo }}" alt="Goat Photo">
+                  <a class="action pho" href="{{ url_for('upload_photo', goat_id=g.id) }}">Change</a>
+                {% else %}
+                  <span class="muted">No Photo</span>
+                  <a class="action pho" href="{{ url_for('upload_photo', goat_id=g.id) }}">Add</a>
+                {% endif %}
+              </td>
+
+              <td>
+                <div class="actions-cell">
+                  <a class="action edit {% if g.is_sold %}lock{% endif %}" href="{{ url_for('edit_goat', goat_id=g.id) }}">Edit</a>
+
+                  <form method="POST" action="{{ url_for('delete_goat', goat_id=g.id) }}" style="display:inline;">
+                    <button class="action del {% if g.is_sold %}lock{% endif %}" onclick="return confirm('Delete this goat?');">Delete</button>
+                  </form>
+
+                  <a class="action wgt {% if g.is_sold %}lock{% endif %}" href="{{ url_for('add_weight', goat_id=g.id) }}">Add Weight</a>
+
+                  {% if g.is_sold %}
+                    <span class="action sell lock" title="Already sold">Sold</span>
+                  {% else %}
+                    <a class="action sell" href="{{ url_for('sell_goat', goat_id=g.id) }}">Sell</a>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="10" class="muted" style="padding:18px;">No goats in this batch yet.</td>
+          </tr>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+
+  <div class="note">
+    Tip: “IN STOCK” goats can be edited/deleted/weight-added. After selling, the row is locked and shows “SOLD”.
+  </div>
+
+</div>
+
+<script>
+  // Count-up animation for KPI numbers
+  (function(){
+    const els = document.querySelectorAll("[data-count]");
+    els.forEach(el=>{
+      const target = parseInt(el.dataset.count || "0", 10);
+      const start = performance.now();
+      const duration = 650;
+
+      function tick(now){
+        const p = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased);
+        if(p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  })();
+</script>
+
+</body>
+</html>

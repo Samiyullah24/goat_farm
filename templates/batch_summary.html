@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Batch Summary - Thavakalthu Farm</title>
+  <style>
+    :root{
+      --green:#2e7d32;
+      --green2:#43a047;
+      --bg:#f5f7fa;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --shadow: 0 14px 30px rgba(0,0,0,0.10);
+      --blue:#1e88e5;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      padding:22px;
+      font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+      background:
+        radial-gradient(circle at 12% -10%, rgba(67,160,71,0.18), transparent 42%),
+        radial-gradient(circle at 110% 0%, rgba(30,136,229,0.16), transparent 46%),
+        var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+
+    .container{ max-width:1200px; margin:0 auto; }
+
+    /* Topbar */
+    .top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      border-radius:18px;
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+      animation: drop 520ms ease both;
+    }
+    @keyframes drop{ from{transform:translateY(-12px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+    .title-wrap{ display:flex; flex-direction:column; gap:4px; }
+    .title{
+      font-size:20px;
+      font-weight:1000;
+      color:var(--green);
+      line-height:1.15;
+    }
+    .sub{
+      font-size:13px;
+      font-weight:800;
+      color:var(--muted);
+    }
+
+    .btn{
+      text-decoration:none;
+      padding:10px 14px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-weight:900;
+      color:var(--text);
+      transition: transform .18s ease;
+      white-space:nowrap;
+    }
+    .btn:hover{ transform: translateY(-1px); }
+
+    /* KPI strip */
+    .kpis{
+      margin-top: 12px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .kpi{
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      border-radius:18px;
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+      opacity:0;
+      transform: translateY(10px);
+      animation: fadeUp 520ms ease forwards;
+    }
+    .kpi:nth-child(1){ animation-delay: 120ms; }
+    .kpi:nth-child(2){ animation-delay: 220ms; }
+
+    @keyframes fadeUp{ to{opacity:1; transform: translateY(0);} }
+
+    .kpi .label{ font-size:13px; font-weight:900; color:var(--muted); }
+    .kpi .big{ font-size:30px; font-weight:1000; margin-top:6px; }
+
+    /* Grid */
+    .grid{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .batch{
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      border-radius:18px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      cursor:pointer;
+      transition: transform .18s ease;
+      position:relative;
+      overflow:hidden;
+      opacity:0;
+      transform: translateY(12px);
+      animation: cardIn 520ms ease forwards;
+    }
+    .batch:hover{ transform: translateY(-2px); }
+
+    .batch::before{
+      content:"";
+      position:absolute;
+      inset:-90px -120px auto auto;
+      width: 260px; height:260px;
+      background: radial-gradient(circle at 30% 30%, rgba(67,160,71,0.18), transparent 60%);
+      transform: rotate(18deg);
+    }
+
+    /* stagger */
+    .batch:nth-child(1){ animation-delay: 140ms; }
+    .batch:nth-child(2){ animation-delay: 220ms; }
+    .batch:nth-child(3){ animation-delay: 300ms; }
+    .batch:nth-child(4){ animation-delay: 380ms; }
+    .batch:nth-child(5){ animation-delay: 460ms; }
+    .batch:nth-child(6){ animation-delay: 540ms; }
+    @keyframes cardIn{ to{opacity:1; transform: translateY(0);} }
+
+    .head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 10px;
+      position:relative;
+      z-index:1;
+    }
+
+    .bname{
+      margin:0;
+      color:var(--green);
+      font-weight:1000;
+      font-size:18px;
+      line-height:1.1;
+    }
+
+    .pill{
+      padding:8px 12px;
+      border-radius:999px;
+      background:#e8f5e9;
+      border:1px solid #d9eadb;
+      color:#14532d;
+      font-weight:1000;
+      font-size:13px;
+      white-space:nowrap;
+    }
+
+    .meta{
+      margin-top:10px;
+      color:var(--muted);
+      font-weight:800;
+      font-size:13px;
+      position:relative;
+      z-index:1;
+    }
+
+    .row{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:10px;
+      margin-top: 14px;
+      position:relative;
+      z-index:1;
+    }
+
+    .num{
+      font-size:28px;
+      font-weight:1000;
+      line-height:1;
+    }
+
+    .small{
+      font-size:12px;
+      font-weight:900;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    .mini{
+      width: 150px;
+      height: 10px;
+      border-radius: 999px;
+      background:#edf2f7;
+      overflow:hidden;
+      border: 1px solid #e6edf5;
+    }
+    .fill{
+      width:0%;
+      height:100%;
+      border-radius:999px;
+      background: linear-gradient(90deg, var(--green2), var(--green));
+      transition: width 900ms cubic-bezier(.2,.9,.2,1);
+    }
+
+    .footer-note{
+      margin-top: 14px;
+      text-align:center;
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 720px){
+      body{ padding:14px; }
+      .grid{ grid-template-columns: 1fr; }
+      .top{ flex-direction:column; align-items:stretch; }
+      .kpis{ grid-template-columns: 1fr; }
+      .mini{ width: 120px; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="top">
+    <div class="title-wrap">
+      <div class="title">Batch Summary</div>
+      <div class="sub">Click a batch card to open goats inside that batch</div>
+    </div>
+    <a class="btn" href="/dashboard">← Back to Dashboard</a>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="label">Total Goats</div>
+      <div class="big" data-count="{{ total_goats|default(0) }}">0</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Total Batches</div>
+      <div class="big" data-count="{{ (rows|length) if rows else 0 }}">0</div>
+    </div>
+  </div>
+
+  <div class="grid" id="grid">
+    {% for r in rows %}
+      {% set c = r.goats_count|default(0) %}
+      <div class="batch" onclick="window.location.href='/batch/{{ r.batch_id }}'">
+        <div class="head">
+          <h3 class="bname">{{ r.batch_name|default('Batch') }}</h3>
+          <div class="pill">Open →</div>
+        </div>
+
+        <div class="meta">
+          Batch ID: #{{ r.batch_id }}
+        </div>
+
+        <div class="row">
+          <div>
+            <div class="small">Goats</div>
+            <div class="num" data-count="{{ c }}">0</div>
+          </div>
+
+          <div>
+            <div class="small" style="text-align:right;">Share</div>
+            <div class="mini">
+              <div class="fill" data-count="{{ c }}"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="footer-note">
+    Tip: Keep batch names like “Batch 1, Batch 2, Batch 3…” for clean sorting.
+  </div>
+
+</div>
+
+<script>
+  // Count-up animation
+  (function(){
+    const els = document.querySelectorAll("[data-count]");
+    els.forEach(el=>{
+      const target = parseInt(el.dataset.count || "0", 10);
+      const start = performance.now();
+      const duration = 700;
+
+      function tick(now){
+        const p = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased);
+        if(p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  })();
+
+  // Share bar animation (relative)
+  (function(){
+    const fills = document.querySelectorAll(".fill");
+    let max = 1;
+    fills.forEach(f => { max = Math.max(max, parseInt(f.dataset.count || "0", 10)); });
+
+    setTimeout(() => {
+      fills.forEach(f => {
+        const c = parseInt(f.dataset.count || "0", 10);
+        const pct = (c / max) * 100;
+        f.style.width = Math.max(6, pct) + "%";
+      });
+    }, 250);
+  })();
+</script>
+
+</body>
+</html>

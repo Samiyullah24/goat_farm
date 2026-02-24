@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Sell Goat</title>
+
+<style>
+:root{
+  --green:#2e7d32;
+  --green2:#43a047;
+  --bg:#f5f7fa;
+  --card:#ffffff;
+  --text:#111827;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --shadow: 0 14px 30px rgba(0,0,0,0.10);
+  --orange:#f59e0b;
+  --orange2:#d97706;
+  --blue:#1e88e5;
+  --red:#dc2626;
+  --mint:#15803d;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  padding:25px;
+  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+  background:
+    radial-gradient(circle at 10% -10%, rgba(67,160,71,0.18), transparent 42%),
+    radial-gradient(circle at 110% 0%, rgba(30,136,229,0.15), transparent 46%),
+    var(--bg);
+  color:var(--text);
+}
+
+.card{
+  max-width:650px;
+  margin:auto;
+  background: rgba(255,255,255,0.93);
+  border:1px solid rgba(255,255,255,0.65);
+  backdrop-filter:blur(10px);
+  padding:24px;
+  border-radius:20px;
+  box-shadow:var(--shadow);
+  animation:fadeUp .5s ease;
+  position:relative;
+  overflow:hidden;
+}
+
+.card:before{
+  content:"";
+  position:absolute;
+  inset:-120px -140px auto auto;
+  width:320px;
+  height:320px;
+  background:radial-gradient(circle at 30% 30%, rgba(67,160,71,0.18), transparent 60%);
+  transform:rotate(18deg);
+}
+
+@keyframes fadeUp{
+  from{transform:translateY(14px);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+
+h2{
+  margin:0 0 10px 0;
+  color:var(--green);
+  font-size:28px;
+  font-weight:1000;
+  position:relative;
+  z-index:1;
+}
+
+.sub{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:800;
+  margin-bottom:15px;
+  position:relative;
+  z-index:1;
+}
+
+.section{
+  background:#fbfdff;
+  border:1px solid var(--border);
+  padding:14px;
+  border-radius:14px;
+  margin-bottom:14px;
+  position:relative;
+  z-index:1;
+}
+
+.section-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width:560px){
+  .section-grid{ grid-template-columns: 1fr; }
+}
+
+.label{
+  font-weight:900;
+  font-size:13px;
+  color:var(--muted);
+}
+
+.value{
+  font-size:22px;
+  font-weight:1000;
+  margin-top:4px;
+}
+
+.profitBox{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap: 10px;
+  margin-top:6px;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px dashed #dfe6ee;
+  background:#ffffff;
+  color: var(--muted);
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.green{ color:var(--mint); }
+.red{ color:var(--red); }
+
+label{
+  display:block;
+  margin-top:14px;
+  font-weight:900;
+  position:relative;
+  z-index:1;
+}
+
+input,textarea{
+  width:100%;
+  padding:11px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  margin-top:6px;
+  font-weight:900;
+  outline:none;
+  background:#fff;
+}
+
+input:focus, textarea:focus{
+  box-shadow:0 0 0 4px rgba(67,160,71,.15);
+}
+
+button{
+  margin-top:16px;
+  background:linear-gradient(90deg,var(--orange),var(--orange2));
+  border:0;
+  color:#111;
+  padding:12px 16px;
+  border-radius:14px;
+  font-weight:1000;
+  cursor:pointer;
+  box-shadow:0 14px 26px rgba(0,0,0,0.15);
+  transition:.2s;
+}
+
+button:hover{ transform:translateY(-1px); }
+
+.back{
+  display:inline-block;
+  margin-top:16px;
+  color:var(--green);
+  font-weight:900;
+  text-decoration:none;
+  position:relative;
+  z-index:1;
+}
+.back:hover{ text-decoration:underline; }
+
+.small{
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--muted);
+}
+</style>
+</head>
+
+<body>
+<div class="card">
+
+  <h2>Sell Goat</h2>
+  <div class="sub">{{ goat.breed }} • Goat ID #{{ goat.goat_id }}</div>
+
+  <!-- PURCHASE + LIVE PREVIEW -->
+  <div class="section section-grid">
+    <div>
+      <div class="label">Purchase Price</div>
+      <div class="value">₹ <span id="purchaseText">0.00</span></div>
+      <div class="small">This comes from Add Goat form</div>
+    </div>
+
+    <div>
+      <div class="label">Profit Preview</div>
+      <div class="profitBox">
+        <div class="badge">Sold − Purchase</div>
+        <div id="profitValue" class="value">₹ 0.00</div>
+      </div>
+      <div id="profitHint" class="small">Enter Sold Price to preview profit</div>
+    </div>
+  </div>
+
+  <form method="POST">
+
+    <label>Sale Date</label>
+    <input type="date" name="sale_date" required>
+
+    <label>Sold Price</label>
+    <input
+      type="number"
+      step="0.01"
+      name="sold_price"
+      id="soldPrice"
+      required
+      inputmode="decimal"
+      placeholder="Example: 25000"
+    >
+
+    <label>Buyer Name (optional)</label>
+    <input type="text" name="buyer_name" placeholder="Buyer name">
+
+    <label>Notes</label>
+    <textarea name="notes" placeholder="Optional notes..."></textarea>
+
+    <button type="submit">Save Sale</button>
+  </form>
+
+  <a class="back" href="/dashboard">← Back to Dashboard</a>
+
+</div>
+
+<script>
+  // Use purchase_price passed from app.py (more reliable than reading goat.purchase_price directly)
+  const purchase = parseFloat("{{ purchase_price|default(goat.purchase_price, true) }}") || 0;
+
+  const purchaseText = document.getElementById("purchaseText");
+  const soldInput = document.getElementById("soldPrice");
+  const profitBox = document.getElementById("profitValue");
+  const profitHint = document.getElementById("profitHint");
+
+  purchaseText.textContent = purchase.toFixed(2);
+
+  function updateProfit(){
+    const sold = parseFloat(soldInput.value) || 0;
+    const profit = sold - purchase;
+
+    // show value
+    profitBox.textContent = "₹ " + profit.toFixed(2);
+
+    // color
+    profitBox.classList.remove("green","red");
+    if(!soldInput.value){
+      profitHint.textContent = "Enter Sold Price to preview profit";
+      return;
+    }
+
+    if(profit >= 0){
+      profitBox.classList.add("green");
+      profitHint.textContent = "Profit (positive)";
+    }else{
+      profitBox.classList.add("red");
+      profitHint.textContent = "Loss (negative)";
+    }
+  }
+
+  soldInput.addEventListener("input", updateProfit);
+  updateProfit();
+</script>
+
+</body>
+</html>

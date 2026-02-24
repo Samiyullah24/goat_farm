@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Edit Goat - Thavakalthu Farm</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f2f18, #2e7d32);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+/* ✅ Elegant Floating Logo Badge */
+.logo-corner {
+  position: fixed;
+  top: 28px;
+  left: 28px;
+  background: rgba(255,255,255,0.92);
+  padding: 14px 18px;
+  border-radius: 32px;
+  box-shadow:
+    0 22px 45px rgba(0,0,0,0.22),
+    0 10px 24px rgba(0,0,0,0.14);
+  backdrop-filter: blur(10px);
+  animation: floatLogo 5s ease-in-out infinite;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  z-index: 999;
+}
+
+@keyframes floatLogo {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.logo-corner:hover {
+  transform: translateY(-6px) scale(1.04) rotate(-2deg);
+  box-shadow:
+    0 28px 60px rgba(0,0,0,0.26),
+    0 18px 40px rgba(212,175,55,0.30);
+}
+
+.logo-corner img {
+  width: 150px;
+  border-radius: 22px;
+  display: block;
+}
+
+.logo-corner::before {
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(212,175,55,0.23), transparent 70%);
+  top: -50px;
+  left: -50px;
+  z-index: -1;
+  border-radius: 50%;
+}
+
+/* Main Card */
+.card {
+  width: 520px;
+  background: white;
+  padding: 44px;
+  border-radius: 26px;
+  box-shadow:
+    0 30px 60px rgba(0,0,0,0.15),
+    0 10px 30px rgba(0,0,0,0.08);
+}
+
+.card h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2e7d32;
+  margin-bottom: 14px;
+  text-align: center;
+}
+.sub {
+  text-align:center;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 600;
+  margin-bottom: 26px;
+}
+
+/* Form */
+.form-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.form-group { margin-bottom: 0; }
+
+label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: #444;
+  font-weight: 700;
+}
+
+input, select {
+  width: 100%;
+  padding: 13px;
+  border-radius: 14px;
+  border: 1px solid #dfe6ee;
+  font-size: 14px;
+  transition: 0.3s;
+  background:#fff;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 4px rgba(212,175,55,0.15);
+}
+
+.full { grid-column: 1 / -1; }
+
+/* Button */
+button {
+  width: 100%;
+  padding: 15px;
+  border-radius: 14px;
+  border: none;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  background: linear-gradient(135deg, #d4af37, #f5d76e);
+  transition: 0.3s;
+  box-shadow: 0 15px 25px rgba(212,175,55,0.25);
+  margin-top: 18px;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 35px rgba(212,175,55,0.35);
+}
+
+/* Back Link */
+.back-link {
+  display: block;
+  text-align: center;
+  margin-top: 18px;
+  font-size: 14px;
+  text-decoration: none;
+  color: #2e7d32;
+  font-weight: 800;
+}
+.back-link:hover { text-decoration: underline; }
+
+.note{
+  margin-top: 10px;
+  font-size: 12px;
+  color:#64748b;
+  font-weight: 600;
+  text-align:center;
+}
+
+@media(max-width: 700px) {
+  body{ padding: 18px; }
+  .card { width: 100%; padding: 32px; }
+  .logo-corner img { width: 120px; }
+  .form-grid{ grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ✅ Logo in Corner -->
+<div class="logo-corner">
+  <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Thavakalthu Farm Logo">
+</div>
+
+<!-- ✅ Main Card -->
+<div class="card">
+  <h2>Edit Goat Details</h2>
+  <div class="sub">Goat ID #{{ goat.goat_id }}</div>
+
+  {# Convert stored float age (ex: 2.5) into years+months for input defaults #}
+  {% set age_float = goat.age|float %}
+  {% set years = age_float|int %}
+  {% set months = ((age_float - years) * 12)|round(0, 'floor')|int %}
+
+  <form method="POST">
+    <div class="form-grid">
+
+      <div class="form-group full">
+        <label>Breed</label>
+        <input type="text" name="breed" value="{{ goat.breed }}" required>
+      </div>
+
+      <div class="form-group">
+        <label>Age (Years)</label>
+        <input type="number" name="age_years" value="{{ years }}" min="0" required>
+      </div>
+
+      <div class="form-group">
+        <label>Age (Months)</label>
+        <input type="number" name="age_months" value="{{ months }}" min="0" max="11" required>
+      </div>
+
+      <div class="form-group">
+        <label>Weight (kg)</label>
+        <input type="number" step="0.01" name="weight" value="{{ goat.weight }}" required>
+      </div>
+
+      <div class="form-group">
+        <label>Purchase Price</label>
+        <input type="number" step="0.01" name="purchase_price" value="{{ goat.purchase_price }}" min="0" required>
+      </div>
+
+      <div class="form-group full">
+        <label>Barcode (optional)</label>
+        <input type="text" name="barcode" value="{{ goat.barcode or '' }}" placeholder="Scan / type barcode">
+      </div>
+
+      <div class="form-group full">
+        <label>Batch</label>
+        <select name="batch_id">
+          <option value="">No Batch</option>
+          {% for b in batches %}
+            <option value="{{ b.batch_id }}" {% if goat.batch_id == b.batch_id %}selected{% endif %}>
+              {{ b.batch_name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+    </div>
+
+    <button type="submit">Update Goat</button>
+    <div class="note">If goat is SOLD, edit is locked by app.py.</div>
+  </form>
+
+  {# ✅ Better back link: go back to goat details #}
+  <a href="{{ url_for('goat_details', goat_id=goat.goat_id) }}" class="back-link">← Back to Goat Details</a>
+</div>
+
+</body>
+</html>

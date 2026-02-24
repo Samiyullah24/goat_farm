@@ -1,0 +1,285 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Dashboard - Thavakalthu Farm</title>
+        <style>
+            :root{
+                --green:#2e7d32;
+                --green2:#43a047;
+                --bg:#f5f7fa;
+                --text:#1f2937;
+                --muted:#9aa4af;
+                --border:#e1e5ea;
+                --shadow: 0 10px 24px rgba(0,0,0,0.08);
+            }
+
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: var(--bg);
+                margin: 0;
+                padding: 22px;
+                color: var(--text);
+            }
+
+            .topbar{
+                max-width: 1200px;
+                margin: 0 auto 18px auto;
+                background: white;
+                border-radius: 14px;
+                box-shadow: var(--shadow);
+                padding: 16px 18px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 14px;
+            }
+
+            .brand{
+                display:flex;
+                align-items:center;
+                gap: 12px;
+                min-width: 260px;
+            }
+
+            .brand img{
+                width: 54px;
+                height: 54px;
+                border-radius: 12px;
+                object-fit: contain;
+                background:#fff;
+                border: 1px solid var(--border);
+            }
+
+            .brand-title{
+                display:flex;
+                flex-direction: column;
+                line-height: 1.15;
+            }
+
+            .brand-title .name{
+                font-size: 22px;
+                font-weight: 900;
+                color: var(--green);
+                letter-spacing: 0.3px;
+            }
+
+            .brand-title .sub{
+                font-size: 13px;
+                color: #6b7280;
+                font-weight: 600;
+            }
+
+            .btn{
+                display:inline-flex;
+                align-items:center;
+                justify-content:center;
+                padding: 10px 14px;
+                border-radius: 12px;
+                text-decoration:none;
+                font-weight: 800;
+                font-size: 14px;
+                border: none;
+                cursor: pointer;
+                transition: 0.2s;
+                box-shadow: 0 10px 18px rgba(0,0,0,0.06);
+                white-space: nowrap;
+            }
+            .btn:hover{ transform: translateY(-1px); }
+
+            .btn-primary{
+                background: var(--green2);
+                color:white;
+            }
+            .btn-primary:hover{ background: var(--green); }
+
+            h2 {
+                text-align: center;
+                color: var(--green);
+                font-size: 30px;
+                margin: 16px 0 14px 0;
+            }
+
+            .table-wrap {
+                max-width: 1200px;
+                margin: 0 auto;
+                overflow-x: auto;
+                background: white;
+                border-radius: 14px;
+                box-shadow: var(--shadow);
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                min-width: 1100px;
+            }
+
+            th, td {
+                padding: 13px 12px;
+                text-align: center;
+                border-bottom: 1px solid var(--border);
+                font-size: 15px;
+                white-space: nowrap;
+                vertical-align: middle;
+            }
+
+            th {
+                background: var(--green);
+                color: white;
+                font-size: 15px;
+                position: sticky;
+                top: 0;
+                z-index: 2;
+            }
+
+            tr:nth-child(even) { background: #fbfdff; }
+            tr:hover { background: #eef8ef; }
+
+            .goat-link {
+                text-decoration: none;
+                color: #14532d;
+                font-weight: 900;
+            }
+            .goat-link:hover {
+                color: #0d47a1;
+                text-decoration: underline;
+            }
+
+            .muted { color: var(--muted); font-weight: 700; }
+
+            .photo-img {
+                width: 42px;          /* ✅ small size */
+                height: 42px;
+                border-radius: 12px;
+                object-fit: cover;
+                border: 1px solid #dce3ea;
+                box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+            }
+
+            .photo-cell{
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                gap: 10px;
+            }
+
+            .action-btn {
+                padding: 8px 14px;
+                border-radius: 12px;
+                text-decoration: none;
+                font-weight: 900;
+                font-size: 13px;
+                margin: 4px 3px;
+                display: inline-block;
+                transition: 0.2s;
+                box-shadow: 0 10px 16px rgba(0,0,0,0.06);
+            }
+            .action-btn:hover { transform: translateY(-1px); }
+
+            .edit-btn { background: #1e88e5; color: white; }
+            .edit-btn:hover { background: #1565c0; }
+
+            .delete-btn { background: #e53935; color: white; }
+            .delete-btn:hover { background: #b71c1c; }
+
+            .weight-btn { background: #ffb300; color: #1b1b1b; }
+            .weight-btn:hover { background: #ffa000; }
+
+            .photo-btn{ background:#6d28d9; color:white; }
+            .photo-btn:hover{ background:#5b21b6; }
+
+            @media (max-width: 720px){
+                body{ padding: 14px; }
+                .topbar{ flex-direction: column; align-items: stretch; }
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="topbar">
+            <div class="brand">
+                <!-- ✅ Your logo file -->
+                
+                <img src="{{ url_for('static', filename='logo.jpg') }}" 
+        alt="Thavakalthu Farm Logo"
+        style="width:60px;height:60px;border-radius:14px;object-fit:cover;border:1px solid #ddd;">
+                    <div class="brand-title">
+                    <div class="name">Thavakalthu Farm</div>
+                    <div class="sub">Goat Management Dashboard</div>
+                </div>
+            </div>
+
+            <a href="/add_goat" class="btn btn-primary">+ Add New Goat</a>
+        </div>
+
+        <h2>Dashboard - Goat List</h2>
+
+        <div class="table-wrap">
+            <table>
+                <tr>
+                    <th>S.No</th>
+                    <th>ID</th>
+                    <th>Breed</th>
+                    <th>Age</th>
+                    <th>Latest Weight (kg)</th>
+                    <th>Barcode</th>
+                    <th>Photo</th>
+                    <th>Actions</th>
+                </tr>
+
+                {% for goat in goats %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ goat.id }}</td>
+
+                    <td>
+                        <a href="/goat/{{ goat.id }}" class="goat-link">{{ goat.breed }}</a>
+                    </td>
+
+                    <td>{{ goat.age_years }}y {{ goat.age_months }}m</td>
+
+                    <td>
+                        {% if goat.latest_weight is not none %}
+                            {{ goat.latest_weight }}
+                        {% else %}
+                            <span class="muted">-</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if goat.barcode %}
+                            {{ goat.barcode }}
+                        {% else %}
+                            <span class="muted">-</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <div class="photo-cell">
+                            {% if goat.photo %}
+                                <img src="/static/uploads/{{ goat.photo }}" class="photo-img" alt="Goat Photo">
+                                <a href="/upload_photo/{{ goat.id }}" class="action-btn photo-btn">Change</a>
+                            {% else %}
+                                    <span class="muted">No Photo</span>
+                                    <a href="/upload_photo/{{ goat.id }}" class="action-btn photo-btn">Add Photo</a>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <td>
+                            <a href="/edit_goat/{{ goat.id }}" class="action-btn edit-btn">Edit</a>
+                        <form method="POST" action="/delete_goat/{{ goat.id }}" style="display:inline;">
+                            <button type="submit" class="action-btn delete-btn" style="border:none;cursor:pointer;"
+                            onclick="return confirm('Are you sure you want to delete this goat?');">Delete</button>
+                        </form>
+                        <a href="/add_weight/{{ goat.id }}" class="action-btn weight-btn">Add Weight</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </body>
+    </html>
